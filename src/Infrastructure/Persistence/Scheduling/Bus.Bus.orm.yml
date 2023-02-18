@@ -1,0 +1,11 @@
+Bookee\Domain\Scheduling\Bus\Bus:
+    type: entity
+    table: scheduling_buses
+    id:
+        id:
+            type: scheduling_bus_bus_id
+    fields:
+        plateNumber:
+            type: scheduling_bus_plate_number
+        seats:
+            type: smallint

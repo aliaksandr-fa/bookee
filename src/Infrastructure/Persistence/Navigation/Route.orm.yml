@@ -1,0 +1,17 @@
+Bookee\Domain\Navigation\Route:
+    type: entity
+    table: navigation_routes
+    id:
+        id:
+            type: navigation_route_id
+    fields:
+        name:
+            type: string
+            length: 150
+        number:
+            type: integer
+    oneToMany:
+        stops:
+            targetEntity: Bookee\Domain\Navigation\RouteStop
+            mappedBy: route
+            cascade: ["persist", "merge", "remove"]

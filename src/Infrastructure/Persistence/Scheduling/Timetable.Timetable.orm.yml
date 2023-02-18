@@ -1,0 +1,36 @@
+Bookee\Domain\Scheduling\Timetable\Timetable:
+    type: entity
+    table: scheduling_timetables
+    id:
+        id:
+            type: scheduling_timetable_id
+    fields:
+        routeId:
+            type: scheduling_route_id
+        day:
+            type: scheduling_cruising_day
+        departures:
+            type: scheduling_departures
+#    manyToMany:
+#        cruises:
+#            targetEntity: Bookee\Domain\Scheduling\Timetable\Cruise
+#            joinTable:
+#                name: scheduling_timetables_cruises
+#                joinColumns:
+#                    timetable_id:
+#                        referencedColumnName: id
+#                inverseJoinColumns:
+#                    cruise_id:
+#                        referencedColumnName: id
+#                        unique: true
+#            cascade: ["persist", "merge", "remove"]
+#    oneToMany:
+#        cruises:
+#            targetEntity: Bookee\Domain\Booking\Booking
+#            mappedBy: trip
+#            cascade: ["persist", "merge", "remove"]
+
+    #[JoinTable(name: 'users_phonenumbers')]
+    #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    #[InverseJoinColumn(name: 'phonenumber_id', referencedColumnName: 'id', unique: true)]
+    #[ManyToMany(targetEntity: 'Phonenumber')]

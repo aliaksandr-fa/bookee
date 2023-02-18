@@ -1,0 +1,14 @@
+Bookee\Domain\Scheduling\Driver\Driver:
+    type: entity
+    table: scheduling_drivers
+    id:
+        id:
+            type: scheduling_driver_id
+    fields:
+        name:
+            type: string
+            length: 100
+        phoneNumber:
+            type: scheduling_driver_phone_number
+        buses:
+            type: scheduling_driver_drivable_buses

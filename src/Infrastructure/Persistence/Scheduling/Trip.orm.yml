@@ -1,0 +1,46 @@
+Bookee\Domain\Scheduling\Trip:
+    type: entity
+    table: scheduling_trips
+    id:
+        id:
+            type: scheduling_trip_id
+    fields:
+        status:
+            type: scheduling_trip_status
+            length: 15
+        seats:
+            type: smallint
+            nullable: true
+        duration:
+            type: integer
+            nullable: false
+        departsAt:
+            type: datetime_immutable
+        routeId:
+            type: scheduling_route_id
+        driverId:
+            type: scheduling_driver_id
+            nullable: true
+        busId:
+            type: scheduling_bus_bus_id
+            nullable: true
+
+    manyToOne:
+#        schedule:
+#            targetEntity: Bookee\Domain\Scheduling\Schedule
+#            inversedBy: trips
+#            joinColumn:
+#                schedule_id:
+#                    referencedColumnName: id
+#        driver:
+#            targetEntity: Bookee\Domain\Scheduling\Driver\Driver
+#            nullable: true
+#            joinColumn:
+#                driver_id:
+#                    referencedColumnName: id
+#        bus:
+#            targetEntity: Bookee\Domain\Scheduling\Bus\Bus
+#            nullable: true
+#            joinColumn:
+#                bus_id:
+#                    referencedColumnName: id

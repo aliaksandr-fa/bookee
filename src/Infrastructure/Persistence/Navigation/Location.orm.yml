@@ -1,0 +1,7 @@
+Bookee\Domain\Navigation\Location:
+    type: embeddable
+    fields:
+        latitude:
+            type: float
+        longitude:
+            type: float

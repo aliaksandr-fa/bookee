@@ -1,0 +1,105 @@
+version: '3'
+
+services:
+
+    bookee-nginx:
+        build:
+            context: ./docker/development
+            dockerfile: nginx.docker
+        volumes:
+            -   ./:/app
+        depends_on:
+            -   bookee-php-fpm
+        ports:
+            -   "8080:80"
+        environment:
+#            VIRTUAL_HOST: ~^(booking|scheduling|navigation)\.bookee\.local
+            VIRTUAL_HOST: api.bookee.local
+
+    bookee-php-fpm:
+        build:
+            context: ./docker/development
+            dockerfile: php-fpm.docker
+        volumes:
+            -   ./:/app
+        depends_on:
+            - bookee-postgres
+            - mailer
+        environment:
+            APP_DEBUG: 1
+
+    bookee-php-cli:
+        build:
+            context: ./docker/development
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/app
+            - composer:/root/.composer/cache
+            - ./docker/development/php/default.ini:/usr/local/etc/php/conf.d/default.ini
+            - ./docker/development/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        depends_on:
+            - bookee-postgres
+            - mailer
+        environment:
+            APP_DEBUG: 1
+
+    bookee-php-worker-test1:
+        build:
+            context: ./docker/development
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/app
+            - composer:/root/.composer/cache
+        depends_on:
+            - bookee-postgres
+            - bookee-redis
+        environment:
+            APP_DEBUG: 1
+        command: "php bin/console messenger:consume test1 -vv"
+
+    bookee-php-worker-test2:
+        build:
+            context: ./docker/development
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/app
+            - composer:/root/.composer/cache
+        depends_on:
+            - bookee-postgres
+            - bookee-redis
+        environment:
+            APP_DEBUG: 1
+        command: "php bin/console messenger:consume test2 -vv"
+
+    bookee-postgres:
+        image: postgres:11.2-alpine
+        volumes:
+            - bookee-postgres:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: app
+            POSTGRES_PASSWORD: secret
+            POSTGRES_DB: app
+        ports:
+            - "54321:5432"
+
+    bookee-redis:
+        image: redis:7.0.8-alpine
+        volumes:
+            - bookee-redis:/data
+        ports:
+            -  "63791:6379"
+
+    mailer:
+        image: mailhog/mailhog
+        ports:
+            - "8082:8025"
+
+volumes:
+    bookee-postgres:
+    bookee-redis:
+    composer:
+
+networks:
+    default:
+        external:
+            name: nginx-proxy

@@ -1,0 +1,30 @@
+framework:
+    messenger:
+
+        default_bus: command.bus
+
+        buses:
+            command.bus:
+                middleware:
+#                    - doctrine_transaction
+            query.bus:
+                middleware:
+                    - validation
+
+        transports:
+            sync: 'sync://'
+            async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            test1: '%env(MESSENGER_TRANSPORT_DSN_TEST1)%'
+            test2: '%env(MESSENGER_TRANSPORT_DSN_TEST2)%'
+
+        routing:
+            # Route your messages to the transports
+#             'Bookee\Application\Booking\CreateTest\CreateTestCommand': [test1, test2]
+
+# when@test:
+#    framework:
+#        messenger:
+#            transports:
+#                # replace with your transport title here (e.g., my_transport: 'in-memory://')
+#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
+#                async: 'in-memory://'

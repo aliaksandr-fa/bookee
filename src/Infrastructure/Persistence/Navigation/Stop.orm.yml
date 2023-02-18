@@ -1,0 +1,13 @@
+Bookee\Domain\Navigation\Stop:
+    type: entity
+    table: navigation_stops
+    id:
+        id:
+            type: navigation_stop_id
+    fields:
+        title:
+            type: string
+            length: 150
+    embedded:
+        location:
+            type: Bookee\Domain\Navigation\Location

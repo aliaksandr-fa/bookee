@@ -1,0 +1,24 @@
+Bookee\Domain\Navigation\RouteStop:
+    type: entity
+    table: navigation_routes_stops
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        eta:
+            type: smallint
+            nullable: true
+        order:
+            type: integer
+            column: stop_order
+        stopId:
+            type: navigation_stop_id
+    manyToOne:
+        route:
+            targetEntity: Bookee\Domain\Navigation\Route
+            inversedBy: stops
+            joinColumn:
+                route_id:
+                    referencedColumnName: id

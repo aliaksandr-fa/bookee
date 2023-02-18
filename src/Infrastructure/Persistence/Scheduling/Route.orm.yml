@@ -1,0 +1,11 @@
+Bookee\Domain\Scheduling\Route:
+    type: entity
+    table: scheduling_routes
+    id:
+        id:
+            type: scheduling_route_id
+    fields:
+        name:
+            type: string
+        duration:
+            type: integer

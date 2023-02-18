@@ -1,0 +1,75 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+#        server_version: '11.2'
+        types:
+#            booking_trip_trip_id: 'Bookee\Infrastructure\Persistence\Booking\Types\TripIdType'
+#            booking_booking_id: 'Bookee\Infrastructure\Persistence\Booking\Types\BookingIdType'
+            navigation_route_id: 'Bookee\Infrastructure\Persistence\Navigation\Types\RouteIdType'
+            navigation_stop_id: 'Bookee\Infrastructure\Persistence\Navigation\Types\StopIdType'
+            scheduling_timetable_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TimetableIdType'
+            scheduling_route_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\RouteIdType'
+            scheduling_driver_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\DriverIdType'
+            scheduling_cruising_day: 'Bookee\Infrastructure\Persistence\Scheduling\Types\CruisingDayType'
+            scheduling_departures: 'Bookee\Infrastructure\Persistence\Scheduling\Types\DeparturesType'
+            scheduling_driver_phone_number: 'Bookee\Infrastructure\Persistence\Scheduling\Types\PhoneNumberType'
+            scheduling_driver_drivable_buses: 'Bookee\Infrastructure\Persistence\Scheduling\Types\DrivableBusesType'
+            scheduling_bus_bus_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\BusIdType'
+            scheduling_bus_plate_number: 'Bookee\Infrastructure\Persistence\Scheduling\Types\PlateNumberType'
+            scheduling_schedule_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\ScheduleIdType'
+            scheduling_trip_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TripIdType'
+            scheduling_trip_status: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TripStatusType'
+
+    orm:
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+#            Booking:
+#                is_bundle: false
+#                type: yml
+#                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Booking'
+#                prefix: 'Bookee\Domain\Booking'
+#                alias: Booking
+            Scheduling:
+                is_bundle: false
+                type: yml
+                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Scheduling'
+                prefix: 'Bookee\Domain\Scheduling'
+                alias: Scheduling
+            Navigation:
+                is_bundle: false
+                type: yml
+                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Navigation'
+                prefix: 'Bookee\Domain\Navigation'
+                alias: Navigation
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
