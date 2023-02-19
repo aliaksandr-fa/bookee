@@ -11,9 +11,9 @@ namespace Bookee\Domain\Navigation;
 class RouteStop
 {
     private int $id;
+    private Route $route;
 
     public function __construct(
-        private Route $route,
         private StopId $stopId,
         private int $order,
         private ?int $eta = null,
@@ -32,5 +32,12 @@ class RouteStop
     public function eta(): int
     {
         return $this->eta;
+    }
+
+    public function attachToRoute(Route $route): RouteStop
+    {
+        $this->route = $route;
+
+        return $this;
     }
 }

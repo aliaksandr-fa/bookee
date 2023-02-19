@@ -10,16 +10,20 @@ framework:
             query.bus:
                 middleware:
                     - validation
+            event.bus:
+                default_middleware:
+                    enabled: true
+                    allow_no_handlers: true
+                middleware:
+                    - validation
 
         transports:
             sync: 'sync://'
             async: '%env(MESSENGER_TRANSPORT_DSN)%'
-            test1: '%env(MESSENGER_TRANSPORT_DSN_TEST1)%'
-            test2: '%env(MESSENGER_TRANSPORT_DSN_TEST2)%'
+            scheduling-main: '%env(MESSENGER_TRANSPORT_DSN_SCHEDULING_MAIN)%'
 
         routing:
-            # Route your messages to the transports
-#             'Bookee\Application\Booking\CreateTest\CreateTestCommand': [test1, test2]
+             'Bookee\Domain\Navigation\RouteCreatedDomainEvent': [scheduling-main]
 
 # when@test:
 #    framework:

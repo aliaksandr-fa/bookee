@@ -4,6 +4,8 @@ namespace Bookee\Infrastructure\DataFixtures\Navigation;
 
 use Bookee\Domain\Navigation\Route;
 use Bookee\Domain\Navigation\RouteId;
+use Bookee\Domain\Navigation\RouteStop;
+use Bookee\Domain\Navigation\RouteStopCollection;
 use Bookee\Domain\Navigation\Stop;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -51,15 +53,15 @@ class RoutesFixtures extends Fixture implements DependentFixtureInterface
         /** @var Stop $firstStop */
         /** @var Stop $lastStop */
         $firstStop = $this->getReference($routeAlias . '_stop_0');
-        $lastStop = $this->getReference($routeAlias . '_stop_' . ($numberOfStops - 1));
+        $lastStop  = $this->getReference($routeAlias . '_stop_' . ($numberOfStops - 1));
 
         $faker = Factory::create();
 
-        $routeName = sprintf("%s: %s -> %s", $routeNumber, $firstStop->title(), $lastStop->title());
+        $routeName     = sprintf("%s: %s -> %s", $routeNumber, $firstStop->title(), $lastStop->title());
         $backRouteName = sprintf("%d: %s -> %s", $routeNumber, $lastStop->title(), $firstStop->title());
 
-        $route = new Route(RouteId::next(), $routeNumber, $routeName);
-        $backRoute = new Route(RouteId::next(), $routeNumber, $backRouteName);
+        $routesStops    = new RouteStopCollection();
+        $backRouteStops = new RouteStopCollection();
 
         $intervals = $this->generateTimeBetweenStops($faker, $numberOfStops);
 
@@ -68,12 +70,17 @@ class RoutesFixtures extends Fixture implements DependentFixtureInterface
             /** @var Stop $stop */
             $stop = $this->getReference($routeAlias . '_stop_' . $i);
             $etaToStop = array_sum(array_slice($intervals, 0, $i));
-            $route->attachStop($stop->id(), $etaToStop);
+
+            $routesStops[] = new RouteStop($stop->id(), $i, $etaToStop);
 
             $stop = $this->getReference($routeAlias . '_stop_' . ($numberOfStops - $i - 1));
             $etaToStop = array_sum(array_slice($intervals, - $i, $i));
-            $backRoute->attachStop($stop->id(), $etaToStop);
+
+            $backRouteStops[] = new RouteStop($stop->id(), $i, $etaToStop);
         }
+
+        $route = new Route(RouteId::next(), $routeNumber, $routeName, $routesStops);
+        $backRoute = new Route(RouteId::next(), $routeNumber, $backRouteName, $backRouteStops);
 
         $this->setReference($routeAlias, $route);
         $this->setReference($routeAlias . '_back', $backRoute);

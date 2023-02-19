@@ -33,3 +33,7 @@ services:
         Bookee\Infrastructure\Bus\Query\QueryHandler:
             tags:
                 - { name: messenger.message_handler, bus: query.bus }
+
+        Bookee\Infrastructure\Bus\Event\EventHandler:
+            tags:
+                - { name: messenger.message_handler, bus: event.bus }

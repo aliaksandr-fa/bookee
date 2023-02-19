@@ -3,6 +3,7 @@
 namespace Bookee\Infrastructure\Persistence\Scheduling;
 
 use Bookee\Application\Scheduling\GetTimetable\RoutesRepository as SchedulingRoutesRepository;
+use Bookee\Application\Scheduling\AddRoute\RoutesRepository as AddRouteRoutesRepository;
 use Bookee\Domain\Scheduling\Route;
 use Bookee\Domain\Scheduling\RouteId;
 use Bookee\Domain\Scheduling\RouteNotFoundException;
@@ -14,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * @package Bookee\Infrastructure\Persistence\Scheduling
  */
-class RoutesRepositoryDoctrine implements SchedulingRoutesRepository, RouteRepository
+class RoutesRepositoryDoctrine implements SchedulingRoutesRepository, AddRouteRoutesRepository, RouteRepository
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
@@ -45,5 +46,11 @@ class RoutesRepositoryDoctrine implements SchedulingRoutesRepository, RouteRepos
         }
 
         return $route;
+    }
+
+    public function save(Route $route): void
+    {
+        $this->entityManager->persist($route);
+        $this->entityManager->flush();
     }
 }

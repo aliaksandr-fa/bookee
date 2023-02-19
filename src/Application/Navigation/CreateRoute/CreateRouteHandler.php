@@ -5,6 +5,8 @@ namespace Bookee\Application\Navigation\CreateRoute;
 use Bookee\Domain\Navigation\Route;
 use Bookee\Domain\Navigation\RouteId;
 use Bookee\Domain\Navigation\RoutesRepository;
+use Bookee\Domain\Navigation\RouteStop;
+use Bookee\Domain\Navigation\RouteStopCollection;
 use Bookee\Domain\Navigation\StopId;
 use Bookee\Infrastructure\Bus\Command\CommandHandler;
 use Bookee\Infrastructure\Bus\Command\Response;
@@ -22,13 +24,14 @@ class CreateRouteHandler implements CommandHandler
     public function __invoke(CreateRouteCommand $command): ?Response
     {
         $routeId = RouteId::next();
+        $stops   = new RouteStopCollection();
 
-        $route = new Route($routeId, $command->routeNumber, $command->routeName);
-
-        foreach ($command->stops as $stop)
+        foreach ($command->stops as $index => $stop)
         {
-            $route->attachStop(new StopId($stop['id']), $stop['eta']);
+            $stops->add(new RouteStop(new StopId($stop['id']), (int) $index, $stop['eta']));
         }
+
+        $route = Route::create($routeId, $command->routeNumber, $command->routeName, $stops);
 
         $this->routesRepository->save($route);
 

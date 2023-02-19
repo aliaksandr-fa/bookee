@@ -15,7 +15,7 @@ class Uuid implements \Stringable
 {
     private string $value;
 
-    public function __construct(string $value)
+    public final function __construct(string $value)
     {
         Assert::uuid($value);
         $this->value = $value;

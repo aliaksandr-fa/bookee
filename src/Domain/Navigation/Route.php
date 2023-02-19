@@ -2,6 +2,7 @@
 
 namespace Bookee\Domain\Navigation;
 
+use Bookee\Domain\Shared\EventsTrait;
 use Doctrine\Common\Collections\Collection;
 
 
@@ -12,13 +13,66 @@ use Doctrine\Common\Collections\Collection;
  */
 class Route
 {
+    use EventsTrait;
+
     public function __construct(
         private RouteId $id,
         private int $number,
         private string $name,
         private RouteStopCollection|Collection $stops = new RouteStopCollection()
     ) {
-        // @todo: ensure route has at least 2 stops (start and finish)
+        $this->ensureRouteStopsValidity();
+    }
+
+    public static function create(RouteId $id, int $number, string $name, RouteStopCollection $stops = new RouteStopCollection()): self
+    {
+        $route = new self($id, $number, $name, $stops);
+
+        $route->recordEvent(
+            new RouteCreatedDomainEvent(
+                $id->value(),
+                $number,
+                $name,
+                array_map(fn(RouteStop $routeStop) => [$routeStop->stopId(), $routeStop->eta()], $stops->toArray()),
+                $route->duration()
+            )
+        );
+
+        return $route;
+    }
+
+    private function ensureRouteStopsValidity(): void
+    {
+        if ($this->stops()->count() < 2)
+        {
+            throw new \InvalidArgumentException('Route must have more than one stop.');
+        }
+
+        $this->sortStopsByOrder();
+
+        for ($i = 0; $i < $this->stops()->count(); $i++)
+        {
+            $current = $this->stops()[$i];
+            $next    = $this->stops()[$i + 1] ?? null;
+
+            if ($next && $next->eta() <= $current->eta())
+            {
+
+                throw new \InvalidArgumentException("Next stop's eta should be more than previous stop's eta.");
+            }
+        }
+
+        foreach ($this->stops() as $stop)
+        {
+            $stop->attachToRoute($this);
+        }
+    }
+
+    private function sortStopsByOrder(): void
+    {
+        $stops = $this->stops()->getIterator();
+        $stops->uasort(fn (RouteStop $a, RouteStop$b) => ($a->order() < $b->order()) ? -1 : 1);
+        $this->stops = new RouteStopCollection(array_values($stops->getArrayCopy()));
     }
 
     public function id(): RouteId
@@ -41,10 +95,6 @@ class Route
         return $this->stops;
     }
 
-    public function hasStops(): bool
-    {
-        return $this->stops()->count() > 0;
-    }
 
     public function attachStop(StopId $stopId, int $eta = 0): void
     {
@@ -52,7 +102,12 @@ class Route
 
         $this->ensureAddingCorrectEta($eta);
 
-        $this->stops->add(new RouteStop($this, $stopId, $order, $eta));
+        $this->stops->add((new RouteStop($stopId, $order, $eta))->attachToRoute($this));
+    }
+
+    public function hasStops(): bool
+    {
+        return $this->stops()->count() > 0;
     }
 
     private function ensureAddingCorrectEta(int $eta): void
@@ -69,6 +124,8 @@ class Route
             throw new \InvalidArgumentException("Eta for attachable stop should be more than previous stop's eta.");
         }
     }
+
+
 
     public function duration(): ?int
     {

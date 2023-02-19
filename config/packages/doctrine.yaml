@@ -19,7 +19,6 @@ doctrine:
             scheduling_driver_drivable_buses: 'Bookee\Infrastructure\Persistence\Scheduling\Types\DrivableBusesType'
             scheduling_bus_bus_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\BusIdType'
             scheduling_bus_plate_number: 'Bookee\Infrastructure\Persistence\Scheduling\Types\PlateNumberType'
-            scheduling_schedule_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\ScheduleIdType'
             scheduling_trip_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TripIdType'
             scheduling_trip_status: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TripStatusType'
 

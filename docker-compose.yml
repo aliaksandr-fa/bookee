@@ -43,7 +43,7 @@ services:
         environment:
             APP_DEBUG: 1
 
-    bookee-php-worker-test1:
+    bookee-php-worker-scheduling-main:
         build:
             context: ./docker/development
             dockerfile: php-cli.docker
@@ -55,21 +55,7 @@ services:
             - bookee-redis
         environment:
             APP_DEBUG: 1
-        command: "php bin/console messenger:consume test1 -vv"
-
-    bookee-php-worker-test2:
-        build:
-            context: ./docker/development
-            dockerfile: php-cli.docker
-        volumes:
-            - ./:/app
-            - composer:/root/.composer/cache
-        depends_on:
-            - bookee-postgres
-            - bookee-redis
-        environment:
-            APP_DEBUG: 1
-        command: "php bin/console messenger:consume test2 -vv"
+        command: "php bin/console messenger:consume scheduling-main -vv"
 
     bookee-postgres:
         image: postgres:11.2-alpine
