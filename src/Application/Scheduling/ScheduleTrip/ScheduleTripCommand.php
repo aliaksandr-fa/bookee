@@ -17,8 +17,11 @@ class ScheduleTripCommand implements Command
     #[Assert\Uuid]
     public string $routeId;
 
-    #[Assert\DateTime]
-    public \DateTimeImmutable $departsAt;
+    #[Assert\Date]
+    public string $departureDate;
+
+    #[Assert\Time]
+    public string $departureTime;
 
     #[Assert\PositiveOrZero]
     public ?int $duration = null;
@@ -32,5 +35,10 @@ class ScheduleTripCommand implements Command
     public bool $chooseBusAutomatically = true;
 
     #[Assert\PositiveOrZero]
-    public ?string $seats = null;
+    public ?int $seats = null;
+
+    public function getDepartureDateTime(): \DateTimeImmutable
+    {
+        return \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "{$this->departureDate} {$this->departureTime}");
+    }
 }

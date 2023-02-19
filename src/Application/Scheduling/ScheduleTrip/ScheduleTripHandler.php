@@ -37,7 +37,7 @@ class ScheduleTripHandler implements CommandHandler
         $bus    = $this->chooseBus($command);
 
         $trip = $this->scheduleTripService->schedule(
-            $command->departsAt,
+            $command->getDepartureDateTime(),
             $route,
             $driver,
             $bus,
