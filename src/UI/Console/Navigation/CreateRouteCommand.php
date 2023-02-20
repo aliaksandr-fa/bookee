@@ -16,7 +16,7 @@ use Bookee\Application\Navigation\CreateStops as CreateStops;
 
 #[AsCommand(
     name: 'bookee:navigation:routes:create',
-    description: '> Navigation. Create route.',
+    description: '> Navigation. Create new route.',
     aliases: ['b:n:r:create'],
     hidden: false
 )]
