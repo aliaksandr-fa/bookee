@@ -24,9 +24,4 @@ enum TripStatus: string
     {
         return $this === self::SCHEDULED;
     }
-
-    public function isSuspended(): bool
-    {
-        return $this === self::SUSPENDED;
-    }
 }

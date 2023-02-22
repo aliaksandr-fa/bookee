@@ -2,10 +2,12 @@
 
 namespace Bookee\Domain\Scheduling;
 
+use Bookee\Domain\Scheduling\Bus\BusAssignedDomainEvent;
 use Bookee\Domain\Scheduling\Bus\BusId;
 use Bookee\Domain\Scheduling\Driver\Driver;
 use Bookee\Domain\Scheduling\Bus\Bus;
 use Bookee\Domain\Scheduling\Driver\DriverId;
+use Bookee\Domain\Shared\EventsTrait;
 
 
 /**
@@ -15,6 +17,8 @@ use Bookee\Domain\Scheduling\Driver\DriverId;
  */
 class Trip
 {
+    use EventsTrait;
+
     private TripStatus $status;
     private ?DriverId $driverId = null;
     private ?BusId $busId = null;
@@ -28,36 +32,31 @@ class Trip
     )
     {
         $this->departsAt = $this->trimSeconds($departsAt);
-        $this->status = TripStatus::DRAFT;
+        $this->status    = TripStatus::DRAFT;
     }
 
     public function schedule(): void
     {
-        if (!$this->status->isDraft())
+        if (!$this->canBeScheduled())
         {
-            //@todo throw exception
+            throw new UnableToScheduleTripException();
         }
 
         $this->status = TripStatus::SCHEDULED;
 
-        // @todo: domain event: trip scheduled?
+        $this->recordEvent(new TripScheduledDomainEvent($this->id()->value()));
     }
 
     public function cancel(): void
     {
-        if (!$this->status->isScheduled())
+        if (!$this->canBeCanceled())
         {
-            //@todo throw exception
+            throw new UnableToCancelTripException();
         }
 
         $this->status = TripStatus::CANCELED;
 
-        // @todo: domain event: trip canceled
-    }
-
-    public function isDraft(): bool
-    {
-        return $this->status->isDraft();
+        $this->recordEvent(new TripCanceledDomainEvent($this->id()->value()));
     }
 
     public function assignDriver(?Driver $driver): void
@@ -72,34 +71,56 @@ class Trip
         }
 
         $this->driverId = null;
-        // @todo: DomainEvent Driver unassigned
     }
 
     public function assignBus(?Bus $bus): void
     {
         if ($bus)
         {
-            if ($this->seats !== null)
+            if ($this->seats !== null && $this->isScheduled())
             {
                 if ($bus->seats() < $this->seats)
                 {
-                    //@todo: throw impossible assign bus with a less then pre allocated seats
-                    //@todo: or check of less seats was booked
+                    throw new NotEnoughSeatsException("Assignable bus has less seats than was already allocated.");
                 }
             }
 
             $this->seats = $bus->seats();
             $this->busId = $bus->id();
+
+            $this->recordEvent(new BusAssignedDomainEvent($this->id()->value(), $bus->id()->value()));
+
         }
         else
         {
+            if ($this->isScheduled())
+            {
+                throw new TripWithoutBusException("Trip is already scheduled. Unable to unassign bus.");
+            }
+
+            $this->seats = null;
             $this->busId = null;
         }
     }
 
-    public function seats(): int
+    private function isScheduled(): bool
     {
-        return $this->seats ?? 0;
+        return $this->status->isScheduled();
+    }
+
+    public function canBeScheduled(): bool
+    {
+        return $this->status->isDraft();
+    }
+
+    public function canBeCanceled(): bool
+    {
+        return $this->status->isDraft();
+    }
+
+    public function seats(): ?int
+    {
+        return $this->seats;
     }
 
     /**
