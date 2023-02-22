@@ -30,7 +30,7 @@ bookee-fixtures:
 	docker-compose run --rm bookee-php-cli  bin/console doctrine:fixtures:load --no-interaction
 
 bookee-about:
-	docker-compose run --rm bookee-php-cli  bin/console bookee:about
+	docker-compose run --rm bookee-php-cli  bin/console bookee:misc:about
 
 composer-install:
 	docker-compose run --rm bookee-php-cli composer install
