@@ -30,8 +30,8 @@ class DriversFixtures extends Fixture implements DependentFixtureInterface
         {
             $driver = new Driver(
                 DriverId::next(),
-                $faker->name,
-                new PhoneNumber($faker->phoneNumber),
+                $faker->name(),
+                new PhoneNumber($faker->phoneNumber()),
                 new DrivableBuses(...$this->chooseDrivableBuses())
             );
 

@@ -28,7 +28,7 @@ class BusesFixtures extends Fixture
             $id = BusId::next();
             $bus = new Bus(
                 $id,
-                new PlateNumber($faker->countryCode . ' ' . $faker->randomNumber(4)),
+                new PlateNumber($faker->countryCode() . ' ' . $faker->randomNumber(4)),
                 $faker->numberBetween(10, 20)
             );
 

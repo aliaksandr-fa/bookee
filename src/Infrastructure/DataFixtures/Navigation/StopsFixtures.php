@@ -29,14 +29,14 @@ class StopsFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        $baseLatitude = $faker->latitude;
-        $baseLongitude = $faker->longitude;
+        $baseLatitude  = $faker->latitude();
+        $baseLongitude = $faker->longitude();
 
         for ($i = 0; $i < $numberOfStops; $i++)
         {
             $stop = new Stop(
                 StopId::next(),
-                $faker->name,
+                $faker->name(),
                 new Location($baseLatitude += 0.01, $baseLongitude += 0.01)
             );
 
