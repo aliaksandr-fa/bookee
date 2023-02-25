@@ -57,6 +57,20 @@ services:
             APP_DEBUG: 1
         command: "php bin/console messenger:consume scheduling-main -vv"
 
+    bookee-php-worker-booking-main:
+        build:
+            context: ./docker/development
+            dockerfile: php-cli.docker
+        volumes:
+            - ./:/app
+            - composer:/root/.composer/cache
+        depends_on:
+            - bookee-postgres
+            - bookee-redis
+        environment:
+            APP_DEBUG: 1
+        command: "php bin/console messenger:consume booking-main -vv"
+
     bookee-postgres:
         image: postgres:11.2-alpine
         volumes:

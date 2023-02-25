@@ -12,5 +12,10 @@ use Bookee\Domain\Shared\DomainEvent;
  */
 class TripScheduledDomainEvent implements DomainEvent
 {
-    public function __construct(public string $tripId) {}
+    public function __construct(
+        public string $tripId,
+        public string $routeId,
+        public \DateTimeImmutable $departsAt,
+        public int $seats
+    ) {}
 }

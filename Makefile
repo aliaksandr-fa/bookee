@@ -35,11 +35,13 @@ bookee-about:
 composer-install:
 	docker-compose run --rm bookee-php-cli composer install
 
-#schema-create:
-#	docker-compose run --rm bookee-php-cli  bin/console doctrine:schema:create
-#
-#schema-drop:
-#	docker-compose run --rm bookee-php-cli  bin/console doctrine:schema:drop --force --full-database
+schema-reload: schema-drop schema-create
+
+schema-create:
+	docker-compose run --rm bookee-php-cli  bin/console doctrine:schema:create
+
+schema-drop:
+	docker-compose run --rm bookee-php-cli  bin/console doctrine:schema:drop --force --full-database
 
 mapping-info:
 	docker-compose run --rm bookee-php-cli  bin/console doctrine:mapping:info

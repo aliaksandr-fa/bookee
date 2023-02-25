@@ -4,6 +4,7 @@ namespace Bookee\Tests\Unit\Domain\Scheduling;
 
 use Bookee\Domain\Scheduling\Bus\Bus;
 use Bookee\Domain\Scheduling\Bus\BusId;
+use Bookee\Domain\Scheduling\NotEnoughSeatsException;
 use Bookee\Domain\Scheduling\RouteId;
 use Bookee\Domain\Scheduling\Trip;
 use Bookee\Domain\Scheduling\TripCanceledDomainEvent;
@@ -38,24 +39,38 @@ class TripTest extends TestCase
     /**
      * @test
      */
-    public function Should_CanBeScheduledAndCanceled_When_TripCreated()
+    public function Should_ThrowException_When_SchedulingAlreadyScheduledTrip()
     {
-        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0);
+        $this->expectException(UnableToScheduleTripException::class);
+        $this->expectExceptionMessage("Trip is already scheduled.");
 
-        $this->assertTrue($trip->canBeScheduled());
-        $this->assertTrue($trip->canBeCanceled());
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 10);
+        $trip->schedule();
+        $trip->schedule();
     }
 
     /**
      * @test
      */
-    public function Should_ThrowException_When_CannotBeScheduled()
+    public function Should_ThrowException_When_SchedulingTripWithoutSeats()
     {
         $this->expectException(UnableToScheduleTripException::class);
-        $this->expectExceptionMessage("Unable to schedule a trip.");
+        $this->expectExceptionMessage("Cannot schedule a trip without seats.");
 
-        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0);
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 0);
         $trip->schedule();
+    }
+
+    /**
+     * @test
+     */
+    public function Should_ThrowException_When_SchedulingCanceledTrip()
+    {
+        $this->expectException(UnableToScheduleTripException::class);
+        $this->expectExceptionMessage("Trip is not in 'draft' status.");
+
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 10);
+        $trip->cancel();
         $trip->schedule();
     }
 
@@ -64,12 +79,11 @@ class TripTest extends TestCase
      */
     public function Should_RecordScheduledDomainEvent_When_TripWasScheduled()
     {
-        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0);
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 10);
         $trip->schedule();
 
         $this->assertContainsOnlyInstancesOf(TripScheduledDomainEvent::class, $trip->releaseEvents());
     }
-
 
     /**
      * @test
@@ -77,9 +91,9 @@ class TripTest extends TestCase
     public function Should_ThrowException_When_CannotBeCanceled()
     {
         $this->expectException(UnableToCancelTripException::class);
-        $this->expectExceptionMessage("Unable to cancel a trip.");
+        $this->expectExceptionMessage("Trip can be canceled only in 'draft' status.");
 
-        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0);
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 10);
         $trip->schedule();
         $trip->cancel();
     }
@@ -123,15 +137,32 @@ class TripTest extends TestCase
         $this->expectExceptionMessage("Trip is already scheduled. Unable to unassign bus.");
 
         $bus = $this->createMock(Bus::class);
-        $bus
-            ->method('id')
-            ->willReturn(BusId::next())
-        ;
+        $bus->method('id')->willReturn(BusId::next());
+        $bus->method('seats')->willReturn(15);
 
-        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0);
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 10);
+
         $trip->assignBus($bus);
         $trip->schedule();
         $trip->assignBus(null);
+    }
+
+    /**
+     * @test
+     */
+    public function Should_ThrowException_When_BusWithLessThatAlreadyPlannedSeatsAssigned()
+    {
+        $this->expectException(NotEnoughSeatsException::class);
+        $this->expectExceptionMessage("Assignable bus has less seats than was already allocated.");
+
+        $bus = $this->createMock(Bus::class);
+        $bus->method('id')->willReturn(BusId::next());
+        $bus->method('seats')->willReturn(10);
+
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 0, 20);
+
+        $trip->schedule();
+        $trip->assignBus($bus);
     }
 
 }

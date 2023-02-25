@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Bookee\Domain\Scheduling\Service\ScheduleTrip;
+namespace Bookee\Domain\Scheduling\Service\CreateTrip;
 
 use Bookee\Domain\Scheduling\Bus\Bus;
 use Bookee\Domain\Scheduling\Driver\Driver;
@@ -14,18 +14,18 @@ use Bookee\Domain\Scheduling\TripRepositoryInterface;
 
 
 /**
- * Class ScheduleTripService
+ * Class CreateTripService
  *
  * @package Bookee\Domain\Scheduling
  */
-class ScheduleTripService
+class CreateTripService
 {
     public function __construct(
         private readonly DriverAvailabilityChecker $driverAvailability,
         private readonly TripRepositoryInterface $trips
     ) {}
 
-    public function schedule(\DateTimeImmutable $forDate, Route $route, ?Driver $driver, ?Bus $bus, ?int $seats): Trip
+    public function create(\DateTimeImmutable $forDate, Route $route, ?Driver $driver, ?Bus $bus, ?int $seats): Trip
     {
         if (null !== $driver)
         {

@@ -1,0 +1,20 @@
+Bookee\Domain\Booking\Booking:
+    type: entity
+    table: booking_bookings
+    id:
+        id:
+            type: booking_booking_id
+        seats:
+            type: smallint
+            nullable: false
+        passengerId:
+            type: booking_passenger_id
+        bookedAt:
+            type: datetime_immutable
+    manyToOne:
+        trip:
+            targetEntity: Bookee\Domain\Booking\Trip
+            inversedBy: bookings
+            joinColumn:
+                trip_id:
+                    referencedColumnName: id

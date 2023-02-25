@@ -21,9 +21,11 @@ framework:
             sync: 'sync://'
             async: '%env(MESSENGER_TRANSPORT_DSN)%'
             scheduling-main: '%env(MESSENGER_TRANSPORT_DSN_SCHEDULING_MAIN)%'
+            booking-main: '%env(MESSENGER_TRANSPORT_DSN_BOOKING_MAIN)%'
 
         routing:
              'Bookee\Domain\Navigation\RouteCreatedDomainEvent': [scheduling-main]
+             'Bookee\Domain\Scheduling\TripScheduledDomainEvent': [booking-main]
 
 # when@test:
 #    framework:

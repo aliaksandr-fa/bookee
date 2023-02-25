@@ -2,17 +2,10 @@
 
 namespace Bookee\Application\Scheduling\ScheduleTrip;
 
-use Bookee\Domain\Scheduling\Bus\Bus;
-use Bookee\Domain\Scheduling\Bus\BusId;
-use Bookee\Domain\Scheduling\Bus\BusRepository;
-use Bookee\Domain\Scheduling\Driver\Driver;
-use Bookee\Domain\Scheduling\Driver\DriverId;
-use Bookee\Domain\Scheduling\Driver\DriverRepository;
-use Bookee\Domain\Scheduling\RouteId;
-use Bookee\Domain\Scheduling\RouteRepository;
-use Bookee\Domain\Scheduling\Service\ScheduleTrip\ScheduleTripService;
+use Bookee\Domain\Scheduling\TripId;
 use Bookee\Infrastructure\Bus\Command\CommandHandler;
 use Bookee\Infrastructure\Bus\Command\Response;
+use Bookee\Infrastructure\Bus\Event\EventBus;
 
 
 /**
@@ -23,51 +16,19 @@ use Bookee\Infrastructure\Bus\Command\Response;
 class ScheduleTripHandler implements CommandHandler
 {
     public function __construct(
-        private RouteRepository $routes,
-        private DriverRepository $drivers,
-        private BusRepository $buses,
-        private readonly ScheduleTripService $scheduleTripService
+        private readonly TripRepository $trips,
+        private readonly EventBus $events
     ){}
 
     public function __invoke(ScheduleTripCommand $command): ?Response
     {
-        $route  = $this->routes->getById(new RouteId($command->routeId));
+        $trip  = $this->trips->getById(new TripId($command->tripId));
 
-        $driver = $this->getDriver($command);
-        $bus    = $this->chooseBus($command);
+        $trip->schedule();
 
-        $trip = $this->scheduleTripService->schedule(
-            $command->getDepartureDateTime(),
-            $route,
-            $driver,
-            $bus,
-            $command->seats
-        );
+        $this->trips->save($trip);
 
-        return new ScheduleTripResult($trip->id()->value());
-    }
-
-    private function chooseBus(ScheduleTripCommand $command): ?Bus
-    {
-        if ($command->busId)
-        {
-            return $this->buses->findById(new BusId($command->busId));
-        }
-
-        if ($command->chooseBusAutomatically && $command->driverId)
-        {
-            return $this->buses->getDrivableByDriver(new DriverId($command->driverId));
-        }
-
-        return null;
-    }
-
-    private function getDriver(ScheduleTripCommand $command): ?Driver
-    {
-        if ($command->driverId)
-        {
-            return $this->drivers->findById(new DriverId($command->driverId));
-        }
+        $this->events->publish(...$trip->releaseEvents());
 
         return null;
     }

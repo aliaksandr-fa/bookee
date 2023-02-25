@@ -2,7 +2,6 @@
 
 namespace Bookee\Domain\Scheduling\Driver;
 
-use Bookee\Domain\Scheduling\Bus\Bus;
 use Bookee\Domain\Scheduling\Bus\BusId;
 
 
@@ -53,5 +52,10 @@ class Driver
     public function hasDrivableBuses(): bool
     {
         return $this->buses->count() > 0;
+    }
+
+    public function phoneNumber(): PhoneNumber
+    {
+        return $this->phoneNumber;
     }
 }

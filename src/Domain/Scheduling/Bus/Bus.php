@@ -29,4 +29,9 @@ class Bus
     {
         return $this->id;
     }
+
+    public function plateNumber(): PlateNumber
+    {
+        return $this->plateNumber;
+    }
 }

@@ -55,6 +55,6 @@ Currently, app has only simple CLI interface. It contains following commands:
   bookee:navigation:stops:create             [b:n:s:create] > Navigation. Batch create stops.
 
   bookee:scheduling:timetables:list          [b:s:t:list] > Scheduling. List timetables for route.
-  bookee:scheduling:trips:schedule           [b:s:t:schedule] > Scheduling. Schedule a trip.
+  bookee:scheduling:trips:create             [b:s:t:schedule] > Scheduling. Create a trip.
   bookee:scheduling:trips:show               [b:s:t:show] > Scheduling. Shows schedule for date and route.
 ```

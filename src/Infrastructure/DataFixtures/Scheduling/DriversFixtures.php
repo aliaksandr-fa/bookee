@@ -28,14 +28,17 @@ class DriversFixtures extends Fixture implements DependentFixtureInterface
 
         for ($i = 0; $i < self::DRIVERS_COUNT; $i++)
         {
+            $id = DriverId::next();
+
             $driver = new Driver(
-                DriverId::next(),
+                $id,
                 $faker->name(),
                 new PhoneNumber($faker->phoneNumber()),
                 new DrivableBuses(...$this->chooseDrivableBuses())
             );
 
             $this->setReference('scheduling_driver_' . $i, $driver);
+            $this->setReference('scheduling_driver_' . $id->value(), $driver);
 
             $manager->persist($driver);
         }

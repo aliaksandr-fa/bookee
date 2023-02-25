@@ -1,0 +1,26 @@
+Bookee\Domain\Booking\Trip:
+    type: entity
+    table: booking_trips
+    id:
+        id:
+            type: booking_trip_id
+    fields:
+        departsAt:
+            type: datetime_immutable
+        routeId:
+            type: booking_route_id
+        seats:
+            type: smallint
+            nullable: false
+        driver:
+            type: booking_driver
+            nullable: true
+        bus:
+            type: booking_bus_plate_number
+            nullable: true
+
+    oneToMany:
+        bookings:
+            targetEntity: Bookee\Domain\Booking\Booking
+            mappedBy: trip
+            cascade: ["persist", "merge", "remove"]

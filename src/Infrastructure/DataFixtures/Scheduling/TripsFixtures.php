@@ -24,6 +24,8 @@ class TripsFixtures extends Fixture implements DependentFixtureInterface
 {
     public const LOAD_FOR_DAYS = 10;
 
+    public static int $tripsCounter = 0;
+
     public function load(ObjectManager $manager): void
     {
         for ($i = 0; $i < self::LOAD_FOR_DAYS; $i++)
@@ -67,6 +69,8 @@ class TripsFixtures extends Fixture implements DependentFixtureInterface
 
             $currentDriver = $currentDriver % $driversToAllocateCount;
             $currentDriver++;
+
+            $this->setReference(sprintf("scheduling_trip_%s", self::$tripsCounter++), $trip);
 
             $manager->persist($trip);
         }

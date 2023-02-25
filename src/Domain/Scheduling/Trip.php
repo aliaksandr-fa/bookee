@@ -37,22 +37,23 @@ class Trip
 
     public function schedule(): void
     {
-        if (!$this->canBeScheduled())
-        {
-            throw new UnableToScheduleTripException();
-        }
+        $this->ensureTripCanBeScheduled();
 
         $this->status = TripStatus::SCHEDULED;
 
-        $this->recordEvent(new TripScheduledDomainEvent($this->id()->value()));
+        $this->recordEvent(
+            new TripScheduledDomainEvent(
+                $this->id()->value(),
+                $this->routeId->value(),
+                $this->departsAt,
+                $this->seats
+            )
+        );
     }
 
     public function cancel(): void
     {
-        if (!$this->canBeCanceled())
-        {
-            throw new UnableToCancelTripException();
-        }
+        $this->ensureTripCanBeCanceled();
 
         $this->status = TripStatus::CANCELED;
 
@@ -108,14 +109,35 @@ class Trip
         return $this->status->isScheduled();
     }
 
-    public function canBeScheduled(): bool
+    private function ensureTripCanBeScheduled(): void
     {
-        return $this->status->isDraft();
+        if ($this->isScheduled())
+        {
+            throw new UnableToScheduleTripException("Trip is already scheduled.");
+        }
+
+        if (!$this->hasSeats())
+        {
+            throw new UnableToScheduleTripException("Cannot schedule a trip without seats.");
+        }
+
+        if (!$this->status->isDraft())
+        {
+            throw new UnableToScheduleTripException("Trip is not in 'draft' status.");
+        }
     }
 
-    public function canBeCanceled(): bool
+    private function ensureTripCanBeCanceled(): void
     {
-        return $this->status->isDraft();
+        if (!$this->status->isDraft())
+        {
+            throw new UnableToCancelTripException("Trip can be canceled only in 'draft' status.");
+        }
+    }
+
+    private function hasSeats(): bool
+    {
+        return $this->seats !== null && $this->seats > 0;
     }
 
     public function seats(): ?int

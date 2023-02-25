@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Bookee\Domain\Scheduling;
+namespace Bookee\Domain\Booking;
 
 use Bookee\Domain\Shared\DomainException;
 
 
 /**
- * Class NotEnoughSeatsException
+ * Class NotEnoughSeats
  *
- * @package Bookee\Domain\Scheduling
+ * @package Bookee\Domain\Booking
  */
 class NotEnoughSeatsException extends DomainException
 {

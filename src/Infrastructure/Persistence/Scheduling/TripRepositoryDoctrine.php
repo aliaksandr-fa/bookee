@@ -2,11 +2,14 @@
 
 namespace Bookee\Infrastructure\Persistence\Scheduling;
 
+use Bookee\Application\Scheduling\ScheduleTrip\TripNotFoundException;
+use Bookee\Application\Scheduling\ScheduleTrip\TripRepository as ScheduleTripRepository;
 use Bookee\Domain\Scheduling\Driver\DriverId;
 use Bookee\Domain\Scheduling\RouteId;
 use Bookee\Domain\Scheduling\Service\DriverAvailability\DriverTripsRepository;
 use Bookee\Domain\Scheduling\Trip;
 use Bookee\Domain\Scheduling\TripCollection;
+use Bookee\Domain\Scheduling\TripId;
 use Bookee\Domain\Scheduling\TripRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * @package Bookee\Infrastructure\Persistence\Scheduling
  */
-class TripRepositoryDoctrine implements TripRepositoryInterface, DriverTripsRepository
+class TripRepositoryDoctrine implements TripRepositoryInterface, DriverTripsRepository, ScheduleTripRepository
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
@@ -50,5 +53,20 @@ class TripRepositoryDoctrine implements TripRepositoryInterface, DriverTripsRepo
         ;
 
         return new TripCollection(...$trips);
+    }
+
+    public function getById(TripId $tripId): Trip
+    {
+        $trip = $this->entityManager
+            ->getRepository(Trip::class)
+            ->findOneBy(['id' => $tripId])
+        ;
+
+        if (!$trip)
+        {
+            throw new TripNotFoundException("Trip with uuid {$trip} not found");
+        }
+
+        return $trip;
     }
 }

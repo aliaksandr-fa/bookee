@@ -6,8 +6,12 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
 #        server_version: '11.2'
         types:
-#            booking_trip_trip_id: 'Bookee\Infrastructure\Persistence\Booking\Types\TripIdType'
-#            booking_booking_id: 'Bookee\Infrastructure\Persistence\Booking\Types\BookingIdType'
+            booking_trip_id: 'Bookee\Infrastructure\Persistence\Booking\Types\TripIdType'
+            booking_booking_id: 'Bookee\Infrastructure\Persistence\Booking\Types\BookingIdType'
+            booking_route_id: 'Bookee\Infrastructure\Persistence\Booking\Types\RouteIdType'
+            booking_passenger_id: 'Bookee\Infrastructure\Persistence\Booking\Types\PassengerIdType'
+            booking_driver: 'Bookee\Infrastructure\Persistence\Booking\Types\DriverType'
+            booking_bus_plate_number: 'Bookee\Infrastructure\Persistence\Booking\Types\BusPlateNumberType'
             navigation_route_id: 'Bookee\Infrastructure\Persistence\Navigation\Types\RouteIdType'
             navigation_stop_id: 'Bookee\Infrastructure\Persistence\Navigation\Types\StopIdType'
             scheduling_timetable_id: 'Bookee\Infrastructure\Persistence\Scheduling\Types\TimetableIdType'
@@ -28,12 +32,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-#            Booking:
-#                is_bundle: false
-#                type: yml
-#                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Booking'
-#                prefix: 'Bookee\Domain\Booking'
-#                alias: Booking
+            Booking:
+                is_bundle: false
+                type: yml
+                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Booking'
+                prefix: 'Bookee\Domain\Booking'
+                alias: Booking
             Scheduling:
                 is_bundle: false
                 type: yml
