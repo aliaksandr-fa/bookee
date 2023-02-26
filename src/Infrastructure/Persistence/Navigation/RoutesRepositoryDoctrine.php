@@ -3,7 +3,9 @@
 namespace Bookee\Infrastructure\Persistence\Navigation;
 
 use Bookee\Domain\Navigation\Route;
+use Bookee\Domain\Navigation\RouteId;
 use Bookee\Domain\Navigation\RoutesRepository;
+use Bookee\Application\Navigation\GetRoute\RoutesRepository as GetRouteRoutesRepository;
 use Bookee\Infrastructure\Bus\Event\EventBus;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -13,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *
  * @package Bookee\Infrastructure\Persistence\Navigation
  */
-class RoutesRepositoryDoctrine implements RoutesRepository
+class RoutesRepositoryDoctrine implements RoutesRepository, GetRouteRoutesRepository
 {
     public function __construct(private EntityManagerInterface $entityManager, private EventBus $events)
     {
@@ -30,5 +32,12 @@ class RoutesRepositoryDoctrine implements RoutesRepository
         $this->entityManager->flush();
 
         $this->events->publish(...$route->releaseEvents());
+    }
+
+    public function findById(RouteId $routeId): ?Route
+    {
+        return $this->entityManager->getRepository(Route::class)->findOneBy([
+            'id' => $routeId
+        ]);
     }
 }

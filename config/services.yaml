@@ -5,8 +5,11 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     booking_host: '%env(resolve:BOOKING_HOST)%'
+    booking_host_internal: '%env(resolve:BOOKING_HOST_INTERNAL)%'
     scheduling_host: '%env(resolve:SCHEDULING_HOST)%'
+    scheduling_host_internal: '%env(resolve:SCHEDULING_HOST_INTERNAL)%'
     navigation_host: '%env(resolve:NAVIGATION_HOST)%'
+    navigation_host_internal: '%env(resolve:NAVIGATION_HOST_INTERNAL)%'
 
 services:
     # default configuration for services in *this* file
@@ -37,3 +40,7 @@ services:
         Bookee\Infrastructure\Bus\Event\EventHandler:
             tags:
                 - { name: messenger.message_handler, bus: event.bus }
+
+#    Bookee\Infrastructure\Persistence\Booking\RouteFetcherApi:
+#        arguments:
+#            $baseUri: '%env(resolve:NAVIGATION_HOST_INTERNAL)%'

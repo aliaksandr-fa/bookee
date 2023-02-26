@@ -1,22 +1,29 @@
-#booking:
-#    host: '%booking_host%'
-#    resource:
-#        path: ../src/UI/Api/Booking
-#        namespace: Bookee\UI\Api\Booking
-#    type: attribute
+booking:
+    host: "{hosts}"
+    prefix: /booking
+    resource:
+        path: ../src/UI/Api/Booking
+        namespace: Bookee\UI\Api\Booking
+    type: attribute
+    requirements:
+        hosts: "%booking_host%|%booking_host_internal%"
 
 navigation:
-    host: '%navigation_host%'
+    host: "{hosts}"
     prefix: /navigation
     resource:
         path: ../src/UI/Api/Navigation
         namespace: Bookee\UI\Api\Navigation
     type: attribute
+    requirements:
+        hosts: "%navigation_host%|%navigation_host_internal%"
 
 scheduling:
-    host: '%scheduling_host%'
+    host: "{hosts}"
     prefix: /scheduling
     resource:
         path: ../src/UI/Api/Scheduling
         namespace: Bookee\UI\Api\Scheduling
     type: attribute
+    requirements:
+        hosts: "%scheduling_host%|%scheduling_host_internal%"

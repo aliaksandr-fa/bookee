@@ -48,6 +48,9 @@ Trying to stick to these architectural patterns and tech topics:
 Currently, app has only simple CLI interface. It contains following commands:
 
 ```shell
+
+  bookee:booking:trips:show                  [b:b:t:show] > Booking. Shows schedule for date and route.
+
   bookee:misc:about                          [b:m:a] > Misc. Print about message.
 
   bookee:navigation:routes:create            [b:n:r:create] > Navigation. Create new route.
@@ -57,4 +60,5 @@ Currently, app has only simple CLI interface. It contains following commands:
   bookee:scheduling:timetables:list          [b:s:t:list] > Scheduling. List timetables for route.
   bookee:scheduling:trips:create             [b:s:t:schedule] > Scheduling. Create a trip.
   bookee:scheduling:trips:show               [b:s:t:show] > Scheduling. Shows schedule for date and route.
+
 ```

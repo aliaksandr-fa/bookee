@@ -18,6 +18,11 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        scoped_clients:
+            navigation.client:
+                base_uri: 'http://%env(resolve:NAVIGATION_HOST_INTERNAL)%/navigation/'
+
 when@test:
     framework:
         test: true
