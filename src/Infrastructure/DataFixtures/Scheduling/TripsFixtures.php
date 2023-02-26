@@ -22,7 +22,7 @@ use Doctrine\Persistence\ObjectManager;
  */
 class TripsFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const LOAD_FOR_DAYS = 10;
+    public const LOAD_FOR_DAYS = 20;
 
     public static int $tripsCounter = 0;
 
@@ -33,6 +33,7 @@ class TripsFixtures extends Fixture implements DependentFixtureInterface
             $date = (new \DateTimeImmutable())->modify("+ $i days");
 
             $this->loadTripsForCruisingDayAndRoute($manager, $date, RoutesFixtures::ROUTE_101_ALIAS);
+            $this->loadTripsForCruisingDayAndRoute($manager, $date, RoutesFixtures::ROUTE_102_ALIAS);
         }
 
         $manager->flush();
@@ -58,19 +59,31 @@ class TripsFixtures extends Fixture implements DependentFixtureInterface
                 TripId::next(),
                 $route->id(),
                 $date->modify($departure->format()),
-                $route->duration()
+                $route->duration(),
+                5
             );
 
-            /** @var Driver $driver */
-            $driver = $this->getReference("scheduling_driver_{$currentDriver}", Driver::class);
+            if (random_int(0, 1) === 0)
+            {
+                /** @var Driver $driver */
+                $driver = $this->getReference("scheduling_driver_{$currentDriver}", Driver::class);
 
-            $trip->assignDriver($driver);
-            $trip->assignBus($this->getBus($driver));
+                $trip->assignDriver($driver);
+                $trip->assignBus($this->getBus($driver));
 
-            $currentDriver = $currentDriver % $driversToAllocateCount;
-            $currentDriver++;
+                $currentDriver = $currentDriver % $driversToAllocateCount;
+                $currentDriver++;
+            }
 
-            $this->setReference(sprintf("scheduling_trip_%s", self::$tripsCounter++), $trip);
+            $tripNumber = self::$tripsCounter++;
+
+            if (random_int(0, 1) === 0)
+            {
+                $trip->schedule();
+                $this->setReference("scheduling_trip_scheduled_$tripNumber", $trip);
+            }
+
+            $this->setReference("scheduling_trip_$tripNumber", $trip);
 
             $manager->persist($trip);
         }
