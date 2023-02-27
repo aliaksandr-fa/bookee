@@ -30,6 +30,20 @@ class Trip
 
     public function book(PassengerId $forPassenger, int $seats, \DateTimeImmutable $bookedAt): void
     {
+
+        $this->ensureTripCanBeBooked($forPassenger, $seats);
+
+        $this->bookings[] = new Booking(
+            BookingId::next(),
+            $this,
+            $seats,
+            $forPassenger,
+            $bookedAt
+        );
+    }
+
+    private function ensureTripCanBeBooked(PassengerId $forPassenger, int $seats): void
+    {
         if ($seats <= 0)
         {
             throw new \InvalidArgumentException("Cannot book negative or zero seats.");
@@ -40,13 +54,10 @@ class Trip
             throw new NotEnoughSeatsException();
         }
 
-        $this->bookings[] = new Booking(
-            BookingId::next(),
-            $this,
-            $seats,
-            $forPassenger,
-            $bookedAt
-        );
+        if ($this->isBookedByPassenger($forPassenger))
+        {
+            throw new TripAlreadyBookedException("This passenger has already booked this trip.");
+        }
     }
 
     private function isEnoughSeats(int $seatsRequested): bool
@@ -66,6 +77,16 @@ class Trip
         return $this->seats - $booked;
     }
 
+    public function isBookedByPassenger(PassengerId $passengerId): bool
+    {
+        return $this->bookingForPassenger($passengerId) !== null;
+    }
+
+    public function bookingForPassenger(PassengerId $passengerId): ?Booking
+    {
+        return $this->bookings->findFirst(fn (int $index, Booking $booking) => $booking->isForPassenger($passengerId));
+    }
+
     public function id(): TripId
     {
         return $this->id;
@@ -74,5 +95,10 @@ class Trip
     public function departsAt(): \DateTimeImmutable
     {
         return $this->departsAt;
+    }
+
+    public function bookings(): BookingCollection
+    {
+        return $this->bookings;
     }
 }

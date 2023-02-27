@@ -1,0 +1,15 @@
+Bookee\Domain\Booking\Passenger\Passenger:
+    type: entity
+    table: booking_passengers
+    id:
+        id:
+            type: booking_passenger_id
+
+    fields:
+        phone:
+            type: booking_passenger_phone
+            length: 20
+
+    embedded:
+        name:
+            type: Bookee\Domain\Booking\Passenger\Name

@@ -10,6 +10,7 @@ doctrine:
             booking_booking_id: 'Bookee\Infrastructure\Persistence\Booking\Types\BookingIdType'
             booking_route_id: 'Bookee\Infrastructure\Persistence\Booking\Types\RouteIdType'
             booking_passenger_id: 'Bookee\Infrastructure\Persistence\Booking\Types\PassengerIdType'
+            booking_passenger_phone: 'Bookee\Infrastructure\Persistence\Booking\Types\PassengerPhoneType'
             booking_driver: 'Bookee\Infrastructure\Persistence\Booking\Types\DriverType'
             booking_bus_plate_number: 'Bookee\Infrastructure\Persistence\Booking\Types\BusPlateNumberType'
             navigation_route_id: 'Bookee\Infrastructure\Persistence\Navigation\Types\RouteIdType'

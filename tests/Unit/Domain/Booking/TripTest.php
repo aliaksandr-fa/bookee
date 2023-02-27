@@ -6,6 +6,7 @@ use Bookee\Domain\Booking\NotEnoughSeatsException;
 use Bookee\Domain\Booking\Passenger\PassengerId;
 use Bookee\Domain\Booking\RouteId;
 use Bookee\Domain\Booking\Trip;
+use Bookee\Domain\Booking\TripAlreadyBookedException;
 use Bookee\Domain\Booking\TripId;
 use PHPUnit\Framework\TestCase;
 
@@ -70,6 +71,23 @@ class TripTest extends TestCase
 
         $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 10);
 
-        $trip->book(PassengerId::next(), 11, new \DateTimeImmutable());
+        $trip->book(PassengerId::next(), 10, new \DateTimeImmutable());
+        $trip->book(PassengerId::next(), 1, new \DateTimeImmutable());
+    }
+
+    /**
+     * @test
+     */
+    public function Should_ThrowException_When_PassengerHasAlreadyBookedThisTrip()
+    {
+        $this->expectException(TripAlreadyBookedException::class);
+        $this->expectExceptionMessage("This passenger has already booked this trip.");
+
+        $trip = new Trip(TripId::next(), RouteId::next(), new \DateTimeImmutable(), 10);
+
+        $passengerId = PassengerId::next();
+
+        $trip->book($passengerId, 1, new \DateTimeImmutable());
+        $trip->book($passengerId, 1, new \DateTimeImmutable());
     }
 }

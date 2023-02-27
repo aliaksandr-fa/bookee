@@ -1,0 +1,10 @@
+Bookee\Domain\Booking\Passenger\Name:
+    type: embeddable
+    fields:
+        firstName:
+            type: string
+            length: 30
+        lastName:
+            type: string
+            length: 30
+            nullable: true

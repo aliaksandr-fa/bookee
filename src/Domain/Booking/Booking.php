@@ -10,7 +10,7 @@ use Bookee\Domain\Booking\Passenger\PassengerId;
  *
  * @package Bookee\Domain\Booking
  */
-class Booking implements \JsonSerializable
+class Booking
 {
     public function __construct(
         private BookingId $id,
@@ -20,10 +20,9 @@ class Booking implements \JsonSerializable
         private \DateTimeImmutable $bookedAt
     ) {}
 
-    public function jsonSerialize(): mixed
+    public function isForPassenger(PassengerId $passengerId): bool
     {
-        // @todo
-        return [];
+        return $this->passengerId->equals($passengerId);
     }
 
     public function id(): BookingId

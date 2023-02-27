@@ -4,6 +4,7 @@ Bookee\Domain\Booking\Trip:
     id:
         id:
             type: booking_trip_id
+
     fields:
         departsAt:
             type: datetime_immutable

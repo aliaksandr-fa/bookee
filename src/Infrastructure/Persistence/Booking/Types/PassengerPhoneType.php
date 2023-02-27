@@ -2,23 +2,23 @@
 
 namespace Bookee\Infrastructure\Persistence\Booking\Types;
 
-use Bookee\Domain\Booking\TripId;
+use Bookee\Domain\Booking\Passenger\Phone;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\StringType;
 
 
-class TripIdType extends GuidType
+class PassengerPhoneType extends StringType
 {
-    public const NAME = 'booking_trip_id';
+    public const NAME = 'booking_passenger_phone';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        return $value instanceof TripId ? $value->value() : $value;
+        return $value instanceof Phone ? $value->value() : $value;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        return !empty($value) ? new TripId($value) : null;
+        return !empty($value) ? new Phone($value) : null;
     }
 
     public function getName(): string

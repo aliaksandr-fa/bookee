@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateTripCommand extends Command
 {
 
-    public function __construct(private CommandBus $commands)
+    public function __construct(private readonly CommandBus $commands)
     {
         parent::__construct();
     }

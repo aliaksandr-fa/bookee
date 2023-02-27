@@ -4,6 +4,7 @@ Bookee\Domain\Booking\Booking:
     id:
         id:
             type: booking_booking_id
+    fields:
         seats:
             type: smallint
             nullable: false
