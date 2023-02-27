@@ -22,7 +22,6 @@ class CreateTripOnSchedulingTripScheduled implements EventHandler
 
     public function __invoke(TripScheduledDomainEvent $event): void
     {
-        var_dump('PLPLPLPLPL');
         $this->trips->save(
             new Trip(new TripId($event->tripId), new RouteId($event->routeId), $event->departsAt, $event->seats)
         );
