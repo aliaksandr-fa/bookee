@@ -2,7 +2,7 @@
 
 namespace Bookee\UI\Console\Scheduling;
 
-use Bookee\Application\Scheduling\CreateTrip\ScheduleTripCommand as CreateCommand;
+use Bookee\Application\Scheduling\CreateTrip\CreateTripCommand as CreateCommand;
 use Bookee\Application\Scheduling\CreateTrip\CreateTripResult;
 use Bookee\Infrastructure\Bus\Command\CommandBus;
 use Symfony\Component\Console\Attribute\AsCommand;

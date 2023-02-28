@@ -2,15 +2,14 @@
 
 namespace Bookee\UI\Console\Navigation;
 
-use Bookee\Application\Navigation\ListRoutes\GetRouteQuery;
-use Bookee\Application\Navigation\ListRoutes\GetRouteResponse;
+use Bookee\Application\Navigation\ListRoutes\ListRoutesQuery;
+use Bookee\Application\Navigation\ListRoutes\ListRoutesResponse;
 use Bookee\Infrastructure\Bus\Query\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,8 +43,8 @@ class ListRoutesCommand extends Command
         $offset = intval($input->getOption('offset'));
         $limit = $input->getOption('limit') ? intval($input->getOption('limit')) : null;
 
-        /** @var GetRouteResponse $response */
-        $response = $this->queries->ask(new GetRouteQuery($offset, $limit));
+        /** @var ListRoutesResponse $response */
+        $response = $this->queries->ask(new ListRoutesQuery($offset, $limit));
 
         $table = new Table($output);
         $table->setHeaders([

@@ -49,7 +49,9 @@ Currently, app has only simple CLI interface. It contains following commands:
 
 ```shell
 
-  bookee:booking:trips:show                  [b:b:t:show] > Booking. Shows schedule for date and route.
+  bookee:booking:trips:book                  [b:b:t:book] > Booking. Book a trip for a passenger.
+  bookee:booking:trips:booked                [b:b:t:booked] > Booking. Shows booked trips for customer.
+  bookee:booking:trips:schedule              [b:b:t:schedule] > Booking. Shows schedule for date and route.
 
   bookee:misc:about                          [b:m:a] > Misc. Print about message.
 

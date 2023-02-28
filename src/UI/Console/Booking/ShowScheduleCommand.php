@@ -16,9 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 
 #[AsCommand(
-    name: 'bookee:booking:trips:show',
+    name: 'bookee:booking:trips:schedule',
     description: '> Booking. Shows schedule for date and route.',
-    aliases: ['b:b:t:show'],
+    aliases: ['b:b:t:schedule'],
     hidden: false
 )]
 class ShowScheduleCommand extends Command
