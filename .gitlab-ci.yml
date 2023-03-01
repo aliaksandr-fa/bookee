@@ -5,5 +5,5 @@ before_script:
 
 test:app:
     script:
-        - ls -la
+        - ls -la ./vendor/bin/
         - php ./vendor/bin/phpunit
