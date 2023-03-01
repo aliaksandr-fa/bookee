@@ -12,6 +12,9 @@ apt-get install git -yqq
 curl --location --output /usr/local/bin/phpunit "https://phar.phpunit.de/phpunit.phar"
 chmod +x /usr/local/bin/phpunit
 
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer --quiet
+composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader
+
 # Install mysql driver
 # Here you can install any other extension that you need
 #docker-php-ext-install pdo_mysql
