@@ -54,14 +54,24 @@ phpunit:
     }
     
     function build_image() {
-      docker pull "${CI_APPLICATION_REPOSITORY}:latest" || true
-      docker build --cache-from ${CI_APPLICATION_REPOSITORY}:latest --tag ${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}:latest .
-      docker push "${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
-      docker push "${CI_APPLICATION_REPOSITORY}:latest"
+      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --file=docker/development/nginx.docker .
+
+      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --file=docker/development/php-fpm.docker .
+
+      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --file=docker/development/php-cli.docker .
+
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG"
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest"
+
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG"
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest"
+
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG"
+      docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest"
     }
     
     function test_phpunit {
-      docker run -d --name "${CI_PROJECT_NAME}" "${CI_APPLICATION_REPOSITORY}:latest" tail -f /opt/README.md
+      docker run -d --name "${CI_PROJECT_NAME}" "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest" tail -f /opt/README.md
       docker exec "${CI_PROJECT_NAME}" ./vendor/bin/phpunit  --testsuite=unit
     }
 
