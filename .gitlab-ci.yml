@@ -67,4 +67,3 @@ phpunit:
 
 before_script:
     - *initialize_functions
-        - php ./vendor/bin/phpunit
