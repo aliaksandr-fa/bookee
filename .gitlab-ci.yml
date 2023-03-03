@@ -1,9 +1,70 @@
-image: php:8.2.3-cli
+image: docker:20-dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+    - build
+    - phpunit
+
+build:
+    stage: build
+    services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+    script:
+        - env
+        - docker --version
+        - setup_docker
+        - build_image
+    only:
+        refs:
+            - ci-cd-setup
+
+phpunit:
+    stage: phpunit
+    services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+    script:
+        - setup_docker
+        - test_phpunit
+    artifacts:
+        paths:
+            - phpunit.coverage.xml
+        when: on_success
+    only:
+        refs:
+            - ci-cd-setup
+
+
+.initialize_functions: &initialize_functions |
+    
+    [[ "$TRACE" ]] && set -x
+    
+    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+    export CI_APPLICATION_TAG=$CI_COMMIT_SHA
+    
+    function setup_docker() {
+        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    }
+    
+    function build_image() {
+      docker pull "${CI_APPLICATION_REPOSITORY}:latest" || true
+      docker build --cache-from ${CI_APPLICATION_REPOSITORY}:latest --tag ${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}:latest .
+      docker push "${CI_APPLICATION_REPOSITORY}:$CI_APPLICATION_TAG"
+      docker push "${CI_APPLICATION_REPOSITORY}:latest"
+    }
+    
+    function test_phpunit {
+      docker run -d --name "${CI_PROJECT_NAME}" "${CI_APPLICATION_REPOSITORY}:latest" tail -f /opt/README.md
+      docker exec "${CI_PROJECT_NAME}" ./vendor/bin/phpunit  --testsuite=unit
+    }
 
 before_script:
-    - bash ci/docker_install.sh > /dev/null
-
-test:app:
-    script:
-        - ls -la ./vendor/bin/
+    - *initialize_functions
         - php ./vendor/bin/phpunit
