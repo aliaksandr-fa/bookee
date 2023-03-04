@@ -7,7 +7,7 @@ variables:
 
 stages:
     - build
-    - phpunit
+    - test
 
 build:
     stage: build
@@ -25,7 +25,7 @@ build:
             - ci-cd-setup
 
 phpunit:
-    stage: phpunit
+    stage: test
     services:
         -   name: docker:20-dind
             alias: docker
