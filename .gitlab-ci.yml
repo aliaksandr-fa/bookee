@@ -1,9 +1,9 @@
 image: docker:20-dind
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
 
 stages:
     - build
@@ -12,9 +12,9 @@ stages:
 build:
     stage: build
     services:
-    - name: docker:20-dind
-      alias: docker
-      command: [ "--tls=false" ]
+        -   name: docker:20-dind
+            alias: docker
+            command: [ "--tls=false" ]
     script:
         - env
         - docker --version
@@ -27,9 +27,9 @@ build:
 phpunit:
     stage: phpunit
     services:
-    - name: docker:20-dind
-      alias: docker
-      command: [ "--tls=false" ]
+        -   name: docker:20-dind
+            alias: docker
+            command: [ "--tls=false" ]
     script:
         - setup_docker
         - test_phpunit
@@ -55,7 +55,12 @@ phpunit:
 
     function build_image() {
       docker pull ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest || true
-      docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --file=docker/development/nginx.docker ./docker/development
+      docker build \
+        --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest \
+        --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG \
+        --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest \
+        --file=docker/nginx/nginx.docker \
+        --target=development .
 
       docker pull ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest || true
       docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --file=docker/development/php-fpm.docker ./docker/development
