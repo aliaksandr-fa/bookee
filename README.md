@@ -2,6 +2,7 @@
     <img align="center" src="public/images/logo_gray--rounded.png" width="150" />
 </div>
 
+<br />
 
 <div align="left">
     <h2>Bookee. Bus trips scheduling and booking system. [WIP]</h2>
