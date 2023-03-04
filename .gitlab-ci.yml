@@ -60,7 +60,7 @@ phpunit:
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG \
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest \
         --file=docker/nginx/nginx.docker \
-        --target=development ./docker/nginx
+        --target=develop ./docker/nginx
 
       docker pull ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest || true
       docker build \
@@ -75,7 +75,7 @@ phpunit:
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG \
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest \
         --file=docker/php/php-cli.docker \
-        --target=development .
+        --target=develop .
 
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG"
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest"
