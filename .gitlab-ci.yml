@@ -88,7 +88,7 @@ phpunit:
     }
 
     function test_phpunit {
-      docker run --rm "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest" php ./vendor/bin/phpunit  --testsuite=unit tail -f /opt/README.md
+      docker run --rm "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest" php ./vendor/bin/phpunit  --testsuite=unit
     }
 
 before_script:
