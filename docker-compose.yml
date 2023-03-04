@@ -6,7 +6,7 @@ services:
         build:
             context: ./docker/nginx
             dockerfile: nginx.docker
-            target: development
+            target: develop
         volumes:
             -   ./:/app
         depends_on:

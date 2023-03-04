@@ -2,7 +2,7 @@ FROM nginx:1.15-alpine as base
 
 WORKDIR /app
 
-FROM base as development
+FROM base as develop
 
 COPY ./development/default.conf /etc/nginx/conf.d/default.conf
 
