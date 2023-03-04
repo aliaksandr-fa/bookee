@@ -4,8 +4,7 @@
 
 
 <div align="left">
-    <h2>[![pipeline status](https://gitlab.com/user/userproject/badges/master/pipeline.svg)](https://gitlab.com/user/userproject/commits/master)
-  Bookee. Bus trips scheduling and booking system. [WIP]</h2>
+    <h2>Bookee. Bus trips scheduling and booking system. [WIP]</h2>
 </div>
 
 
