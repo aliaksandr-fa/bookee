@@ -67,11 +67,15 @@ phpunit:
         --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest \
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG \
         --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest \
-        --file=docker/php/php-fpm.docker \
-        --target=development .
+        --file=docker/php/php-fpm.docker .
 
       docker pull ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest || true
-      docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --file=docker/development/php-cli.docker ./docker/development
+      docker build \
+        --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest \
+        --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG \
+        --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest \
+        --file=docker/php/php-cli.docker \
+        --target=development .
 
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG"
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest"
