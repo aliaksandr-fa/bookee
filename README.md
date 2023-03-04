@@ -2,8 +2,10 @@
     <img align="center" src="public/images/logo_gray--rounded.png" width="150" />
 </div>
 
-<div align="center">
-    <h2><em>Bookee</em>. Bus trips scheduling and booking system. [WIP]</h2>
+
+<div align="left">
+    <h2>[![pipeline status](https://gitlab.com/user/userproject/badges/master/pipeline.svg)](https://gitlab.com/user/userproject/commits/master)
+  Bookee. Bus trips scheduling and booking system. [WIP]</h2>
 </div>
 
 
