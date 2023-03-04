@@ -1,0 +1,38 @@
+FROM php:8.2.3-cli as base
+
+RUN pecl install -o -f redis \
+    && rm -rf /tmp/pear ~/.pearrc \
+    && docker-php-ext-enable redis
+
+RUN apt-get update && apt-get install -y libpq-dev zlib1g-dev zip \
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=composer:2.5.4 /usr/bin/composer /usr/bin/composer
+COPY ./composer.json ./composer.lock /app/
+
+
+FROM base as develop
+
+RUN pecl install -o -f xdebug \
+    && rm -rf /tmp/pear ~/.pearrc \
+    && docker-php-ext-enable xdebug
+
+COPY ./docker/php/development/default.ini /usr/local/etc/php/conf.d/default.ini
+COPY ./docker/php/development/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+RUN composer install --no-scripts
+COPY . /app
+RUN composer run-script post-install-cmd
+
+
+FROM base as production
+
+COPY ./docker/php/production/default.ini /usr/local/etc/php/conf.d/default.ini
+
+RUN composer install --prefer-dist --no-dev --no-scripts
+COPY . /app
+RUN composer dumpautoload --optimize

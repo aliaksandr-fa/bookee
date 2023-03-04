@@ -43,22 +43,25 @@ phpunit:
 
 
 .initialize_functions: &initialize_functions |
-    
+
     [[ "$TRACE" ]] && set -x
-    
+
     export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
     export CI_APPLICATION_TAG=$CI_COMMIT_SHA
-    
+
     function setup_docker() {
         docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
     }
-    
+
     function build_image() {
-      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --file=docker/development/nginx.docker ./docker/development
+      docker pull ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest || true
+      docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest --file=docker/development/nginx.docker ./docker/development
 
-      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --file=docker/development/php-fpm.docker ./docker/development
+      docker pull ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest || true
+      docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-fpm:latest --file=docker/development/php-fpm.docker ./docker/development
 
-      docker build --pull --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --file=docker/development/php-cli.docker ./docker/development
+      docker pull ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest || true
+      docker build --cache-from ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG --tag ${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest --file=docker/development/php-cli.docker ./docker/development
 
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:$CI_APPLICATION_TAG"
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-nginx:latest"
@@ -69,7 +72,7 @@ phpunit:
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:$CI_APPLICATION_TAG"
       docker push "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest"
     }
-    
+
     function test_phpunit {
       docker run --rm "${CI_APPLICATION_REPOSITORY}/bookee-php-cli:latest" php ./vendor/bin/phpunit  --testsuite=unit tail -f /opt/README.md
     }

@@ -1,0 +1,6 @@
+/vendor
+/var
+.git
+
+/bin/.phpunit
+/phpunit.xml

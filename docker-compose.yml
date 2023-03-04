@@ -1,11 +1,12 @@
-version: '3'
+version: '3.4'
 
 services:
 
     bookee-nginx:
         build:
-            context: ./docker/development
+            context: ./docker/nginx
             dockerfile: nginx.docker
+            target: development
         volumes:
             -   ./:/app
         depends_on:
@@ -18,8 +19,8 @@ services:
 
     bookee-php-fpm:
         build:
-            context: ./docker/development
-            dockerfile: php-fpm.docker
+            context: .
+            dockerfile: ./docker/php/php-fpm.docker
         volumes:
             -   ./:/app
         depends_on:
@@ -30,13 +31,14 @@ services:
 
     bookee-php-cli:
         build:
-            context: ./docker/development
-            dockerfile: php-cli.docker
+            context: .
+            dockerfile: ./docker/php/php-cli.docker
+            target: develop
         volumes:
             - ./:/app
             - composer:/root/.composer/cache
-            - ./docker/development/php/default.ini:/usr/local/etc/php/conf.d/default.ini
-            - ./docker/development/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+            - ./docker/php/development/default.ini:/usr/local/etc/php/conf.d/default.ini
+            - ./docker/php/development/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
         depends_on:
             - bookee-postgres
             - mailer
@@ -45,8 +47,9 @@ services:
 
     bookee-php-worker-scheduling-main:
         build:
-            context: ./docker/development
-            dockerfile: php-cli.docker
+            context: .
+            dockerfile: ./docker/php/php-cli.docker
+            target: develop
         volumes:
             - ./:/app
             - composer:/root/.composer/cache
@@ -59,8 +62,9 @@ services:
 
     bookee-php-worker-booking-main:
         build:
-            context: ./docker/development
-            dockerfile: php-cli.docker
+            context: .
+            dockerfile: ./docker/php/php-cli.docker
+            target: develop
         volumes:
             - ./:/app
             - composer:/root/.composer/cache
