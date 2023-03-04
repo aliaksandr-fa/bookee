@@ -4,7 +4,7 @@
 
 <br />
 
-<div align="left">
+<div align="center">
     <h2>Bookee. Bus trips scheduling and booking system. [WIP]</h2>
 </div>
 
