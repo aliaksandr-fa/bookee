@@ -7,21 +7,20 @@ services:
             context: ./docker/development
             dockerfile: nginx.docker
         volumes:
-            -   ./:/app
+            - ./:/app
         depends_on:
-            -   bookee-php-fpm
+            - bookee-php-fpm
         ports:
-            -   "8080:80"
-        environment:
-#            VIRTUAL_HOST: ~^(booking|scheduling|navigation)\.bookee\.local
-            VIRTUAL_HOST: api.bookee.local
+            - "8080:80"
+        extra_hosts:
+            - "api.bookee.local:127.0.0.1"
 
     bookee-php-fpm:
         build:
             context: ./docker/development
             dockerfile: php-fpm.docker
         volumes:
-            -   ./:/app
+            - ./:/app
         depends_on:
             - bookee-postgres
             - mailer
@@ -87,7 +86,7 @@ services:
         volumes:
             - bookee-redis:/data
         ports:
-            -  "63791:6379"
+            - "63791:6379"
 
     mailer:
         image: mailhog/mailhog
@@ -98,8 +97,3 @@ volumes:
     bookee-postgres:
     bookee-redis:
     composer:
-
-networks:
-    default:
-        external:
-            name: nginx-proxy
